@@ -84,3 +84,73 @@ mediana <- li_me + ((pos - soma_ant) / fi[posicao]) * h
 
 tabela <- cbind(lim_inf, lim_sup, fi, xi, fac)
 tabela
+
+# variancia
+xi2fi <- xifi * xi
+xi2fi
+
+tabela <- cbind(tabela, xi2fi)
+tabela
+
+variancia <- (sum(xi2fi) - sum(xifi)^2 / n) / (n - 1)
+variancia
+
+desviopadrao <- sqrt(variancia)
+desviopadrao
+
+coef_variacao <- desviopadrao / media * 100
+coef_variacao
+
+nomes <- c("Média", "Moda", "Mediana", "var", "DP", "cv")
+resumo_agrupado <- round(c(media, moda, mediana, variancia, desviopadrao, coef_variacao), 2)
+names(resumo_agrupado) <- nomes
+resumo_agrupado
+
+resumo_dados_agrupado <- function(lim_inf, lim_sup, fi) {
+  xi <- (lim_inf + lim_sup) / 2
+
+  # media
+  xifi <- xi * fi
+  media <- sum(xifi) / sum(fi)
+
+  # moda
+  posicao <- xi[which.max(fi)]
+
+  delta1 <- fi[posicao] - fi[posicao - 1]
+  delta2 <- fi[posicao] - fi[posicao + 1]
+
+  li_mo <- lim_inf[posicao]
+  h <- lim_sup[posicao] - lim_inf[posicao]
+
+  moda <- round(li_mo + delta1 / (delta1 + delta2) * h, 2)
+
+  # mediana
+  posicao <- which(cumsum(fi) >= n / 2)[1]
+
+  li_me <- lim_inf[posicao]
+  h <- lim_sup[posicao] - lim_inf[posicao]
+
+  soma_ant <- fac[posicao - 1]
+  mediana <- li_me + (n / 2 - soma_ant) / fi[posicao] * h
+
+  # variancia
+  xi2fi <- xifi * xi
+  variancia <- (sum(xi2fi) - sum(xifi)^2 / n) / (n - 1)
+
+  # desvio padrao
+  desviopadrao <- sqrt(variancia)
+
+  # coeficiente de variacao
+  coef_variacao <- desviopadrao / media * 100
+
+  nomes <- c("Média", "Moda", "Mediana", "var", "DP", "cv")
+  resumo_agrupado <- round(c(media, moda, mediana, variancia, desviopadrao, coef_variacao), 2)
+  names(resumo_agrupado) <- nomes
+  resumo_agrupado
+}
+
+li <- c(0, 4, 8, 12, 16)
+ls <- c(4, 8, 12, 16, 20)
+fi <- c(8, 15, 24, 20, 13)
+
+resumo_dados_agrupado(li, ls, fi)
